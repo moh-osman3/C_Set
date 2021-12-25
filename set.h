@@ -5,28 +5,27 @@
 #define PRIME 786433 // for sizes b/w 2^19 and 2^20 https://planetmath.org/goodhashtableprimes
 
 /*
- * keys for this hash table are strings
- * and the values are integers.
+ * This set contains elements that are strings 
  */
 typedef char keyType[MAX_SIZE];
 
 typedef struct set_elt {
     keyType key;
-    struct ht_elt *next;
-} ht_elt;
+    struct set_elt *next;
+} set_elt;
 
 typedef struct set {
     struct set_elt **table;
     int capacity;
     int num_elt;
-} hashtable;
+} set;
 
 
 int allocate(set **map, int size);
 
-int insert(set *map, keyType key, valType val);
+int insert(set *map, keyType key);
 
-int get(set *map, keyType key, valType *val);
+int is_present(set *map, keyType key);
 
 int erase(set *map, keyType key);
 

@@ -70,7 +70,7 @@ int allocate(set **map,        // IN/OUT
         fprintf(stdout, "%s:%d: Out of memory\n", __FUNCTION__, __LINE__);
         return -1;
     }
-    (*map)->table = malloc(sizeof(ht_elt *) * size);
+    (*map)->table = malloc(sizeof(set_elt *) * size);
     (*map)->capacity = size;
     (*map)->num_elt = 0;
 
@@ -103,7 +103,7 @@ int insert(set *map,        // IN/OUT
 {
     int index = hash(key);
 
-    ht_elt *tmp = map->table[index];
+    set_elt *tmp = map->table[index];
 
     /*
      * Check if key is already in the set.
@@ -116,7 +116,7 @@ int insert(set *map,        // IN/OUT
     }
 
     tmp = map->table[index];
-    ht_elt *new_node = malloc(sizeof(ht_elt));
+    set_elt *new_node = malloc(sizeof(set_elt));
      
     if (new_node == NULL) {
         fprintf(stdout, "%s:%d: Out of memory\n", __FUNCTION__, __LINE__);
@@ -152,7 +152,7 @@ int is_present(set *map,  // IN
                keyType key)     // IN
 {
     int index = hash(key);
-    ht_elt *tmp = map->table[index];
+    set_elt *tmp = map->table[index];
 
     while (tmp != NULL) {
         if (strcmp(tmp->key, key) == 0) {
@@ -183,7 +183,7 @@ int erase(set *map, // IN/OUT
           keyType key)    // IN
 {
     int index = hash(key);
-    ht_elt *tmp = map->table[index];
+    set_elt *tmp = map->table[index];
 
     if (tmp == NULL) {
         fprintf(stdout, "Unable to find key to delete\n");
@@ -191,7 +191,7 @@ int erase(set *map, // IN/OUT
     }
 
     map->num_elt -= 1;
-    ht_elt *prev = tmp;
+    set_elt *prev = tmp;
     tmp = tmp->next;
     while (tmp != NULL) {
         
@@ -206,7 +206,11 @@ int erase(set *map, // IN/OUT
         prev = prev->next;
     }
 
-    free(prev);
+    if (strcmp(map->table[index]->key, key) != 0) {
+        fprintf(stdout, "Unable to find key to delete\n");
+        return -1;
+    }
+    free(map->table[index]);
     map->table[index] = NULL;
     return 0;
 }
